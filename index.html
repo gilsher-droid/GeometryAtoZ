@@ -1,1 +1,756 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry A to Z</title>
+  <style>
+    :root {
+      --navy: #06283d;
+      --navy-light: #0c4a6e;
+      --blue: #0284c7;
+      --blue-soft: #eaf6fc;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --border: #dbe5ee;
+      --success: #16815d;
+      --warning: #c77700;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Heebo", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #eef5fa 0%, var(--bg) 260px);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: white;
+      padding: 28px 6%;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+    }
+
+    header p {
+      margin: 8px 0 0;
+      color: #d9edf8;
+      max-width: 760px;
+    }
+
+    main {
+      width: min(1180px, 92%);
+      margin: 28px auto 60px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.45rem;
+      color: var(--navy);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--navy);
+      padding: 11px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .tab-button.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .panel {
+      display: none;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    .keys-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .key-card {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      cursor: pointer;
+      text-align: right;
+      transition: 0.2s ease;
+      min-height: 145px;
+    }
+
+    .key-card:hover,
+    .key-card.active {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.12);
+    }
+
+    .key-card .icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue-soft);
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .key-card h3 {
+      margin: 0 0 4px;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .key-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .detail-box {
+      margin-top: 20px;
+      background: var(--blue-soft);
+      border: 1px solid #c9e8f8;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .detail-box h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .visual-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: 700;
+    }
+
+    input[type="range"],
+    select {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 1rem;
+    }
+
+    .status {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .quiz {
+      margin-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .quiz-options button {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 12px;
+      padding: 11px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .quiz-options button.correct {
+      background: #e8f8f1;
+      border-color: var(--success);
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .quiz-options button.wrong {
+      background: #fff4e5;
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .feedback {
+      min-height: 28px;
+      margin-top: 10px;
+      font-weight: 700;
+    }
+
+    .lesson-path {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: center;
+      margin-top: 22px;
+    }
+
+    .path-node {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .arrow {
+      text-align: center;
+      color: var(--blue);
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid,
+      .keys-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .lesson-path {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .summary-grid,
+      .keys-grid,
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        width: min(94%, 1180px);
+      }
+
+      .panel {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Geometry A to Z</h1>
+    <p>צרור המפתחות של יוני: זוויות, ישרים, משפטים ומשולשים — עד למשפט שסכום זוויות המשולש הוא 180°.</p>
+  </header>
+
+  <main>
+    <section class="summary-grid">
+      <div class="summary-card">
+        <span>מפתחות שנרכשו</span>
+        <strong>19</strong>
+      </div>
+      <div class="summary-card">
+        <span>צרורות ידע</span>
+        <strong>3</strong>
+      </div>
+      <div class="summary-card">
+        <span>משפטים שנלמדו</span>
+        <strong>6</strong>
+      </div>
+      <div class="summary-card">
+        <span>מפתח הסיום</span>
+        <strong>180°</strong>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="נושאי השיעור">
+      <button class="tab-button active" data-panel="angles">זוויות</button>
+      <button class="tab-button" data-panel="lines">ישרים ומשפטים</button>
+      <button class="tab-button" data-panel="triangles">משולשים</button>
+      <button class="tab-button" data-panel="final">סיכום השיעור</button>
+    </nav>
+
+    <section id="angles" class="panel active">
+      <h2>צרור הזוויות</h2>
+      <p>לחיצה על כל מפתח פותחת את ההגדרה והמשמעות שלו.</p>
+
+      <div class="keys-grid" id="angleKeys"></div>
+
+      <div class="detail-box">
+        <h3 id="angleTitle">זווית חדה</h3>
+        <p id="angleDefinition">זווית שגודלה גדול מ־0° וקטן מ־90°.</p>
+        <p><strong>איך מזהים?</strong> <span id="angleRecognition">היא צרה יותר מזווית ישרה.</span></p>
+      </div>
+    </section>
+
+    <section id="lines" class="panel">
+      <h2>ישרים, חותך וקשרים בין זוויות</h2>
+
+      <div class="two-column">
+        <div>
+          <div class="keys-grid" id="lineKeys"></div>
+
+          <div class="detail-box">
+            <h3 id="lineTitle">זוויות מתאימות</h3>
+            <p id="lineDefinition">כאשר שני ישרים מקבילים נחתכים על ידי ישר שלישי, זוויות מתאימות שוות זו לזו.</p>
+            <p><strong>שימוש:</strong> <span id="lineUse">מעבירים את גודל הזווית לנקודת החיתוך השנייה.</span></p>
+          </div>
+        </div>
+
+        <div class="visual-box">
+          <span class="status" id="relationStatus">זוויות מתאימות</span>
+
+          <svg viewBox="0 0 500 330" aria-label="שני ישרים מקבילים וישר חותך">
+            <line x1="50" y1="95" x2="450" y2="95" stroke="#1f2937" stroke-width="5" />
+            <line x1="50" y1="235" x2="450" y2="235" stroke="#1f2937" stroke-width="5" />
+            <line id="transversalLine" x1="155" y1="300" x2="345" y2="30" stroke="#0284c7" stroke-width="5" />
+
+            <circle id="mark1" cx="285" cy="95" r="28" fill="#dceff9" />
+            <circle id="mark2" cx="188" cy="235" r="28" fill="#dceff9" />
+
+            <text id="angleText1" x="285" y="102" text-anchor="middle" font-size="17">60°</text>
+            <text id="angleText2" x="188" y="242" text-anchor="middle" font-size="17">60°</text>
+          </svg>
+
+          <label for="relationSelect">בחרו קשר בין הזוויות</label>
+          <select id="relationSelect">
+            <option value="corresponding">זוויות מתאימות</option>
+            <option value="alternate">זוויות מתחלפות</option>
+            <option value="sameSide">זוויות חד־צדדיות</option>
+          </select>
+
+          <label for="lineAngleSlider">שנו את זווית החותך</label>
+          <input id="lineAngleSlider" type="range" min="30" max="80" value="60" />
+
+          <p id="lineMessage">60° = 60°</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="triangles" class="panel">
+      <h2>צרור המשולשים</h2>
+      <p>אותו משולש יכול להיות מסווג גם לפי הזוויות וגם לפי הצלעות.</p>
+
+      <div class="two-column">
+        <div>
+          <div class="keys-grid" id="triangleKeys"></div>
+
+          <div class="detail-box">
+            <h3 id="triangleTitle">משולש חד־זווית</h3>
+            <p id="triangleDefinition">משולש שכל שלוש הזוויות שלו קטנות מ־90°.</p>
+            <p><strong>סיווג לפי זוויות:</strong> <span id="angleClass">חד־זווית</span></p>
+            <p><strong>סיווג לפי צלעות:</strong> <span id="sideClass">שווה־שוקיים</span></p>
+          </div>
+        </div>
+
+        <div class="visual-box">
+          <span class="status" id="triangleStatus">משולש חד־זווית</span>
+
+          <svg viewBox="0 0 460 320" aria-label="משולש לדוגמה">
+            <polygon id="triangleShape" points="80,260 380,260 230,70"
+              fill="#eaf6fc" stroke="#0284c7" stroke-width="5" stroke-linejoin="round" />
+
+            <text id="triAngleA" x="105" y="245" font-size="17">52°</text>
+            <text id="triAngleB" x="342" y="245" font-size="17">52°</text>
+            <text id="triAngleC" x="230" y="108" text-anchor="middle" font-size="17">76°</text>
+          </svg>
+
+          <label for="triangleSelect">בחרו סוג משולש</label>
+          <select id="triangleSelect">
+            <option value="acute">חד־זווית</option>
+            <option value="obtuse">קהה־זווית</option>
+            <option value="right">ישר־זווית</option>
+            <option value="isosceles">שווה־שוקיים</option>
+            <option value="equilateral">שווה־צלעות</option>
+            <option value="scalene">שונה־צלעות</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section id="final" class="panel">
+      <h2>מפתח הסיום: סכום זוויות המשולש הוא 180°</h2>
+
+      <div class="two-column">
+        <div>
+          <div class="detail-box">
+            <h3>מה המשפט אומר?</h3>
+            <p>בכל משולש, ללא קשר לצורתו ולגודלו, סכום שלוש הזוויות הפנימיות הוא תמיד 180°.</p>
+
+            <h3>מדוע זה חשוב?</h3>
+            <p>אם ידועות שתי זוויות במשולש, אפשר לחשב את הזווית השלישית.</p>
+
+            <h3>על אילו מפתחות הוא נשען?</h3>
+            <p>ישרים מקבילים, זוויות מתחלפות וזווית שטוחה של 180°.</p>
+          </div>
+
+          <div class="lesson-path">
+            <div class="path-node">סוגי זוויות</div>
+            <div class="arrow">←</div>
+            <div class="path-node">ישרים מקבילים</div>
+            <div class="arrow">←</div>
+            <div class="path-node">זוויות מתחלפות</div>
+            <div class="arrow">←</div>
+            <div class="path-node">סכום זוויות במשולש</div>
+          </div>
+        </div>
+
+        <div class="visual-box">
+          <span class="status" id="sumStatus">60° + 60° + 60° = 180°</span>
+
+          <svg viewBox="0 0 480 330" aria-label="משולש משתנה">
+            <polygon id="finalTriangle" points="70,270 410,270 240,70"
+              fill="#eaf6fc" stroke="#0284c7" stroke-width="5" stroke-linejoin="round" />
+
+            <line x1="70" y1="45" x2="410" y2="45"
+              stroke="#64748b" stroke-width="3" stroke-dasharray="8 7" />
+
+            <text id="finalA" x="98" y="250" font-size="17">60°</text>
+            <text id="finalB" x="365" y="250" font-size="17">60°</text>
+            <text id="finalC" x="240" y="108" text-anchor="middle" font-size="17">60°</text>
+          </svg>
+
+          <label for="shapeSlider">שנו את מיקום קודקוד המשולש</label>
+          <input id="shapeSlider" type="range" min="110" max="370" value="240" />
+
+          <div class="quiz">
+            <h3>בדיקת סיום</h3>
+            <p>במשולש שתי זוויות הן 45° ו־70°. מה גודל הזווית השלישית?</p>
+            <div class="quiz-options">
+              <button data-answer="65">65°</button>
+              <button data-answer="75">75°</button>
+              <button data-answer="115">115°</button>
+              <button data-answer="135">135°</button>
+            </div>
+            <div class="feedback" id="quizFeedback"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const angleData = [
+      { title: "זווית חדה", short: "קטנה מ־90°", definition: "זווית שגודלה גדול מ־0° וקטן מ־90°.", recognition: "היא צרה יותר מזווית ישרה." },
+      { title: "זווית ישרה", short: "90°", definition: "זווית שגודלה בדיוק 90°.", recognition: "היא נראית כמו פינה של ריבוע." },
+      { title: "זווית קהה", short: "בין 90° ל־180°", definition: "זווית הגדולה מ־90° וקטנה מ־180°.", recognition: "היא רחבה מזווית ישרה." },
+      { title: "זווית שטוחה", short: "180°", definition: "זווית שגודלה 180°.", recognition: "שתי השוקיים יוצרות קו ישר." },
+      { title: "זווית עגולה", short: "360°", definition: "זווית המתארת סיבוב שלם.", recognition: "השוק חוזרת לאותו כיוון." }
+    ];
+
+    const lineData = [
+      { title: "זוויות קודקודיות", short: "שוות זו לזו", definition: "זוויות הנמצאות זו מול זו כאשר שני ישרים נחתכים.", use: "אם זווית אחת ידועה, הזווית שמולה שווה לה." },
+      { title: "זוויות צמודות", short: "סכומן 180°", definition: "שתי זוויות צמודות היוצרות יחד קו ישר.", use: "מחסרים זווית ידועה מ־180°." },
+      { title: "זוויות מתאימות", short: "שוות זו לזו", definition: "כאשר שני ישרים מקבילים נחתכים על ידי ישר שלישי, זוויות מתאימות שוות.", use: "מעבירים את גודל הזווית לנקודת החיתוך השנייה." },
+      { title: "זוויות מתחלפות", short: "שוות זו לזו", definition: "זוויות פנימיות הנמצאות משני צדי החותך שוות.", use: "משתמשים בהן בחישובים ובהוכחות." },
+      { title: "זוויות חד־צדדיות", short: "סכומן 180°", definition: "זוויות פנימיות באותו צד של החותך משלימות ל־180°.", use: "מחסרים את הזווית הידועה מ־180°." }
+    ];
+
+    const triangleData = [
+      { id: "acute", title: "משולש חד־זווית", short: "שלוש זוויות חדות", definition: "משולש שכל שלוש הזוויות שלו קטנות מ־90°.", angleClass: "חד־זווית", sideClass: "שווה־שוקיים" },
+      { id: "obtuse", title: "משולש קהה־זווית", short: "זווית אחת קהה", definition: "משולש שיש בו זווית אחת הגדולה מ־90°.", angleClass: "קהה־זווית", sideClass: "שונה־צלעות" },
+      { id: "right", title: "משולש ישר־זווית", short: "זווית אחת של 90°", definition: "משולש שיש בו זווית ישרה.", angleClass: "ישר־זווית", sideClass: "שונה־צלעות" },
+      { id: "isosceles", title: "משולש שווה־שוקיים", short: "שתי צלעות שוות", definition: "משולש שיש בו לפחות שתי צלעות שוות.", angleClass: "חד־זווית", sideClass: "שווה־שוקיים" },
+      { id: "equilateral", title: "משולש שווה־צלעות", short: "שלוש צלעות שוות", definition: "משולש שכל שלוש הצלעות שלו שוות.", angleClass: "חד־זווית", sideClass: "שווה־צלעות" },
+      { id: "scalene", title: "משולש שונה־צלעות", short: "שלוש צלעות שונות", definition: "משולש שכל שלוש הצלעות שלו שונות.", angleClass: "חד־זווית", sideClass: "שונה־צלעות" }
+    ];
+
+    const triangleStates = {
+      acute: { points: "80,260 380,260 230,70", angles: ["52°", "52°", "76°"], status: "משולש חד־זווית" },
+      obtuse: { points: "65,260 395,260 135,110", angles: ["38°", "27°", "115°"], status: "משולש קהה־זווית" },
+      right: { points: "100,260 380,260 100,80", angles: ["90°", "33°", "57°"], status: "משולש ישר־זווית" },
+      isosceles: { points: "80,260 380,260 230,75", angles: ["51°", "51°", "78°"], status: "משולש שווה־שוקיים" },
+      equilateral: { points: "80,260 380,260 230,80", angles: ["60°", "60°", "60°"], status: "משולש שווה־צלעות" },
+      scalene: { points: "75,260 390,260 260,95", angles: ["41°", "58°", "81°"], status: "משולש שונה־צלעות" }
+    };
+
+    function createKeyCards(containerId, data, clickHandler) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+
+      data.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.className = "key-card";
+        button.type = "button";
+        button.innerHTML = `
+          <div class="icon">🔑</div>
+          <h3>${item.title}</h3>
+          <p>${item.short}</p>
+        `;
+        button.addEventListener("click", () => {
+          container.querySelectorAll(".key-card").forEach(card => card.classList.remove("active"));
+          button.classList.add("active");
+          clickHandler(item, index);
+        });
+
+        if (index === 0) {
+          button.classList.add("active");
+        }
+
+        container.appendChild(button);
+      });
+    }
+
+    createKeyCards("angleKeys", angleData, item => {
+      document.getElementById("angleTitle").textContent = item.title;
+      document.getElementById("angleDefinition").textContent = item.definition;
+      document.getElementById("angleRecognition").textContent = item.recognition;
+    });
+
+    createKeyCards("lineKeys", lineData, item => {
+      document.getElementById("lineTitle").textContent = item.title;
+      document.getElementById("lineDefinition").textContent = item.definition;
+      document.getElementById("lineUse").textContent = item.use;
+    });
+
+    createKeyCards("triangleKeys", triangleData, item => {
+      document.getElementById("triangleTitle").textContent = item.title;
+      document.getElementById("triangleDefinition").textContent = item.definition;
+      document.getElementById("angleClass").textContent = item.angleClass;
+      document.getElementById("sideClass").textContent = item.sideClass;
+      document.getElementById("triangleSelect").value = item.id;
+      updateTriangle(item.id);
+    });
+
+    document.querySelectorAll(".tab-button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+
+        button.classList.add("active");
+        document.getElementById(button.dataset.panel).classList.add("active");
+      });
+    });
+
+    const relationSelect = document.getElementById("relationSelect");
+    const lineAngleSlider = document.getElementById("lineAngleSlider");
+
+    function updateRelation() {
+      const angle = Number(lineAngleSlider.value);
+      const relation = relationSelect.value;
+      const supplement = 180 - angle;
+
+      document.getElementById("angleText1").textContent = angle + "°";
+
+      if (relation === "sameSide") {
+        document.getElementById("relationStatus").textContent = "זוויות חד־צדדיות";
+        document.getElementById("angleText2").textContent = supplement + "°";
+        document.getElementById("lineMessage").textContent = angle + "° + " + supplement + "° = 180°";
+        document.getElementById("mark1").setAttribute("cx", "285");
+        document.getElementById("mark1").setAttribute("cy", "125");
+        document.getElementById("mark2").setAttribute("cx", "200");
+        document.getElementById("mark2").setAttribute("cy", "205");
+        document.getElementById("angleText1").setAttribute("x", "285");
+        document.getElementById("angleText1").setAttribute("y", "132");
+        document.getElementById("angleText2").setAttribute("x", "200");
+        document.getElementById("angleText2").setAttribute("y", "212");
+      } else if (relation === "alternate") {
+        document.getElementById("relationStatus").textContent = "זוויות מתחלפות";
+        document.getElementById("angleText2").textContent = angle + "°";
+        document.getElementById("lineMessage").textContent = angle + "° = " + angle + "°";
+        document.getElementById("mark1").setAttribute("cx", "265");
+        document.getElementById("mark1").setAttribute("cy", "125");
+        document.getElementById("mark2").setAttribute("cx", "205");
+        document.getElementById("mark2").setAttribute("cy", "205");
+        document.getElementById("angleText1").setAttribute("x", "265");
+        document.getElementById("angleText1").setAttribute("y", "132");
+        document.getElementById("angleText2").setAttribute("x", "205");
+        document.getElementById("angleText2").setAttribute("y", "212");
+      } else {
+        document.getElementById("relationStatus").textContent = "זוויות מתאימות";
+        document.getElementById("angleText2").textContent = angle + "°";
+        document.getElementById("lineMessage").textContent = angle + "° = " + angle + "°";
+        document.getElementById("mark1").setAttribute("cx", "285");
+        document.getElementById("mark1").setAttribute("cy", "95");
+        document.getElementById("mark2").setAttribute("cx", "188");
+        document.getElementById("mark2").setAttribute("cy", "235");
+        document.getElementById("angleText1").setAttribute("x", "285");
+        document.getElementById("angleText1").setAttribute("y", "102");
+        document.getElementById("angleText2").setAttribute("x", "188");
+        document.getElementById("angleText2").setAttribute("y", "242");
+      }
+    }
+
+    relationSelect.addEventListener("change", updateRelation);
+    lineAngleSlider.addEventListener("input", updateRelation);
+
+    const triangleSelect = document.getElementById("triangleSelect");
+
+    function updateTriangle(id) {
+      const state = triangleStates[id];
+      const item = triangleData.find(t => t.id === id);
+
+      document.getElementById("triangleShape").setAttribute("points", state.points);
+      document.getElementById("triAngleA").textContent = state.angles[0];
+      document.getElementById("triAngleB").textContent = state.angles[1];
+      document.getElementById("triAngleC").textContent = state.angles[2];
+      document.getElementById("triangleStatus").textContent = state.status;
+
+      if (item) {
+        document.getElementById("triangleTitle").textContent = item.title;
+        document.getElementById("triangleDefinition").textContent = item.definition;
+        document.getElementById("angleClass").textContent = item.angleClass;
+        document.getElementById("sideClass").textContent = item.sideClass;
+      }
+    }
+
+    triangleSelect.addEventListener("change", () => updateTriangle(triangleSelect.value));
+
+    function calculateAngle(ax, ay, bx, by, cx, cy) {
+      const abx = ax - bx;
+      const aby = ay - by;
+      const cbx = cx - bx;
+      const cby = cy - by;
+      const dot = abx * cbx + aby * cby;
+      const mag1 = Math.hypot(abx, aby);
+      const mag2 = Math.hypot(cbx, cby);
+      const cosine = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
+      return Math.acos(cosine) * 180 / Math.PI;
+    }
+
+    const shapeSlider = document.getElementById("shapeSlider");
+
+    function updateFinalTriangle() {
+      const topX = Number(shapeSlider.value);
+      const left = { x: 70, y: 270 };
+      const right = { x: 410, y: 270 };
+      const top = { x: topX, y: 70 };
+
+      document.getElementById("finalTriangle")
+        .setAttribute("points", `${left.x},${left.y} ${right.x},${right.y} ${top.x},${top.y}`);
+
+      const a = Math.round(calculateAngle(top.x, top.y, left.x, left.y, right.x, right.y));
+      const b = Math.round(calculateAngle(left.x, left.y, right.x, right.y, top.x, top.y));
+      const c = 180 - a - b;
+
+      document.getElementById("finalA").textContent = a + "°";
+      document.getElementById("finalB").textContent = b + "°";
+      document.getElementById("finalC").textContent = c + "°";
+      document.getElementById("finalC").setAttribute("x", topX);
+      document.getElementById("sumStatus").textContent = `${a}° + ${b}° + ${c}° = 180°`;
+    }
+
+    shapeSlider.addEventListener("input", updateFinalTriangle);
+
+    document.querySelectorAll(".quiz-options button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".quiz-options button").forEach(btn => {
+          btn.classList.remove("correct", "wrong");
+        });
+
+        const feedback = document.getElementById("quizFeedback");
+
+        if (button.dataset.answer === "65") {
+          button.classList.add("correct");
+          feedback.textContent = "נכון. 180° − 45° − 70° = 65°.";
+        } else {
+          button.classList.add("wrong");
+          feedback.textContent = "נסה שוב: חבר את שתי הזוויות הידועות והחסר את הסכום מ־180°.";
+        }
+      });
+    });
+
+    updateRelation();
+    updateTriangle("acute");
+    updateFinalTriangle();
+  </script>
+</body>
+</html>
