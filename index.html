@@ -148,6 +148,28 @@
       box-shadow: 0 8px 22px rgba(2, 132, 199, 0.12);
     }
 
+    #angleKeys .key-card.angle-focus {
+      border-width: 3px;
+      border-color: var(--focus-color, var(--blue));
+      background: var(--focus-bg, var(--blue-soft));
+      box-shadow: 0 0 0 4px var(--focus-ring, rgba(2, 132, 199, 0.16));
+      transform: translateY(-3px) scale(1.015);
+    }
+
+    #angleKeys .key-card.angle-focus .icon {
+      background: var(--focus-icon-bg, var(--blue-soft));
+    }
+
+    #angleKeys .key-card.angle-pulse {
+      animation: angleCardPulse 0.65s ease;
+    }
+
+    @keyframes angleCardPulse {
+      0% { transform: translateY(-3px) scale(1.015); }
+      45% { transform: translateY(-3px) scale(1.055); }
+      100% { transform: translateY(-3px) scale(1.015); }
+    }
+
     .key-card .icon {
       width: 42px;
       height: 42px;
@@ -644,6 +666,10 @@
       document.getElementById("angleRecognition").textContent = item.recognition;
     });
 
+    document.querySelectorAll("#angleKeys .key-card").forEach((card, index) => {
+      card.dataset.angleTitle = angleData[index].title;
+    });
+
     createKeyCards("lineKeys", lineData, item => {
       document.getElementById("lineTitle").textContent = item.title;
       document.getElementById("lineDefinition").textContent = item.definition;
@@ -771,6 +797,40 @@
       ].join(" ");
     }
 
+    let lastFocusedAngleTitle = "";
+
+    function focusMatchingAngleCard(title, color) {
+      const cards = document.querySelectorAll("#angleKeys .key-card");
+      let matchingCard = null;
+
+      cards.forEach(card => {
+        const isMatch = card.dataset.angleTitle === title;
+        card.classList.toggle("angle-focus", isMatch);
+
+        if (isMatch) {
+          matchingCard = card;
+          card.style.setProperty("--focus-color", color);
+          card.style.setProperty("--focus-bg", color + "18");
+          card.style.setProperty("--focus-ring", color + "2d");
+          card.style.setProperty("--focus-icon-bg", color + "22");
+        }
+      });
+
+      if (matchingCard && title !== lastFocusedAngleTitle) {
+        matchingCard.classList.remove("angle-pulse");
+        void matchingCard.offsetWidth;
+        matchingCard.classList.add("angle-pulse");
+
+        matchingCard.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest"
+        });
+
+        lastFocusedAngleTitle = title;
+      }
+    }
+
     function updateDynamicAngle() {
       const angle = Number(dynamicAngleSlider.value);
       const centerX = 220;
@@ -807,9 +867,31 @@
       dynamicAngleTitle.textContent = classification.title;
       dynamicAngleDefinition.textContent = classification.definition;
       dynamicAngleRange.textContent = classification.range;
+
+      focusMatchingAngleCard(classification.title, activeColor);
     }
 
     dynamicAngleSlider.addEventListener("input", updateDynamicAngle);
+
+
+    document.querySelectorAll("#angleKeys .key-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const representativeAngles = {
+          "זווית חדה": 45,
+          "זווית ישרה": 90,
+          "זווית קהה": 120,
+          "זווית שטוחה": 180,
+          "זווית נישאה": 240,
+          "זווית עגולה": 360
+        };
+
+        const targetAngle = representativeAngles[card.dataset.angleTitle];
+        if (typeof targetAngle === "number") {
+          dynamicAngleSlider.value = targetAngle;
+          updateDynamicAngle();
+        }
+      });
+    });
 
     const relationSelect = document.getElementById("relationSelect");
     const lineAngleSlider = document.getElementById("lineAngleSlider");
