@@ -234,6 +234,25 @@
       font-weight: 700;
     }
 
+    .angle-color-zero { color: #64748b; }
+    .angle-color-acute { color: #16815d; }
+    .angle-color-right { color: #2563eb; }
+    .angle-color-obtuse { color: #d97706; }
+    .angle-color-straight { color: #dc2626; }
+    .angle-color-reflex { color: #7c3aed; }
+    .angle-color-full { color: #b58900; }
+
+    #movingRay,
+    #angleArc {
+      transition: stroke 0.2s ease;
+    }
+
+    #dynamicAngleStatus,
+    #dynamicAngleValue,
+    #dynamicAngleTitle {
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
     .quiz {
       margin-top: 24px;
       border-top: 1px solid var(--border);
@@ -664,7 +683,8 @@
         return {
           title: "זווית אפס",
           definition: "שתי שוקי הזווית נמצאות באותו כיוון, ולכן גודל הזווית הוא 0°.",
-          range: "0°"
+          range: "0°",
+          colorKey: "zero"
         };
       }
 
@@ -672,7 +692,8 @@
         return {
           title: "זווית חדה",
           definition: "זווית שגודלה גדול מ־0° וקטן מ־90°.",
-          range: "בין 0° ל־90°"
+          range: "בין 0° ל־90°",
+          colorKey: "acute"
         };
       }
 
@@ -680,7 +701,8 @@
         return {
           title: "זווית ישרה",
           definition: "זווית שגודלה בדיוק 90°.",
-          range: "90°"
+          range: "90°",
+          colorKey: "right"
         };
       }
 
@@ -688,7 +710,8 @@
         return {
           title: "זווית קהה",
           definition: "זווית שגודלה גדול מ־90° וקטן מ־180°.",
-          range: "בין 90° ל־180°"
+          range: "בין 90° ל־180°",
+          colorKey: "obtuse"
         };
       }
 
@@ -696,7 +719,8 @@
         return {
           title: "זווית שטוחה",
           definition: "זווית שגודלה בדיוק 180° ושוקיה יוצרות קו ישר.",
-          range: "180°"
+          range: "180°",
+          colorKey: "straight"
         };
       }
 
@@ -704,14 +728,16 @@
         return {
           title: "זווית נישאה",
           definition: "זווית שגודלה גדול מ־180° וקטן מ־360°.",
-          range: "בין 180° ל־360°"
+          range: "בין 180° ל־360°",
+          colorKey: "reflex"
         };
       }
 
       return {
         title: "זווית עגולה",
         definition: "זווית המתארת סיבוב שלם וגודלה 360°.",
-        range: "360°"
+        range: "360°",
+        colorKey: "full"
       };
     }
 
@@ -752,9 +778,28 @@
       const end = polarPoint(centerX, centerY, rayLength, angle);
       const classification = classifyAngle(angle);
 
+      const angleColors = {
+        zero: "#64748b",
+        acute: "#16815d",
+        right: "#2563eb",
+        obtuse: "#d97706",
+        straight: "#dc2626",
+        reflex: "#7c3aed",
+        full: "#b58900"
+      };
+
+      const activeColor = angleColors[classification.colorKey];
+
       movingRay.setAttribute("x2", end.x);
       movingRay.setAttribute("y2", end.y);
       angleArc.setAttribute("d", describeArc(centerX, centerY, 72, 0, angle));
+      movingRay.setAttribute("stroke", activeColor);
+      angleArc.setAttribute("stroke", activeColor);
+
+      dynamicAngleStatus.style.backgroundColor = activeColor + "22";
+      dynamicAngleStatus.style.color = activeColor;
+      dynamicAngleValue.style.fill = activeColor;
+      dynamicAngleTitle.style.color = activeColor;
 
       dynamicAngleStatus.textContent = classification.title;
       dynamicAngleValue.textContent = angle + "°";
@@ -900,4 +945,3 @@
   </script>
 </body>
 </html>
-
