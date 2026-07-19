@@ -370,14 +370,43 @@
 
     <section id="angles" class="panel active">
       <h2>צרור הזוויות</h2>
-      <p>לחיצה על כל מפתח פותחת את ההגדרה והמשמעות שלו.</p>
+      <p>אפשר לפתוח כל מפתח, ובמעבדת הזוויות לשנות את גודל הזווית ולראות כיצד הסיווג משתנה.</p>
 
-      <div class="keys-grid" id="angleKeys"></div>
+      <div class="two-column">
+        <div>
+          <div class="keys-grid" id="angleKeys"></div>
 
-      <div class="detail-box">
-        <h3 id="angleTitle">זווית חדה</h3>
-        <p id="angleDefinition">זווית שגודלה גדול מ־0° וקטן מ־90°.</p>
-        <p><strong>איך מזהים?</strong> <span id="angleRecognition">היא צרה יותר מזווית ישרה.</span></p>
+          <div class="detail-box">
+            <h3 id="angleTitle">זווית חדה</h3>
+            <p id="angleDefinition">זווית שגודלה גדול מ־0° וקטן מ־90°.</p>
+            <p><strong>איך מזהים?</strong> <span id="angleRecognition">היא צרה יותר מזווית ישרה.</span></p>
+          </div>
+        </div>
+
+        <div class="visual-box">
+          <span class="status" id="dynamicAngleStatus">זווית חדה</span>
+
+          <svg id="dynamicAngleSvg" viewBox="0 0 440 330" aria-label="זווית אינטראקטיבית שמשתנה לפי המחוון">
+            <circle cx="220" cy="235" r="6" fill="#06283d" />
+            <line x1="220" y1="235" x2="390" y2="235"
+              stroke="#06283d" stroke-width="6" stroke-linecap="round" />
+            <line id="movingRay" x1="220" y1="235" x2="390" y2="235"
+              stroke="#0284c7" stroke-width="6" stroke-linecap="round" />
+            <path id="angleArc" fill="none" stroke="#0284c7" stroke-width="7"
+              stroke-linecap="round" />
+            <text id="dynamicAngleValue" x="220" y="305" text-anchor="middle"
+              font-size="24" font-weight="700" fill="#06283d">45°</text>
+          </svg>
+
+          <label for="dynamicAngleSlider">שנו את גודל הזווית</label>
+          <input id="dynamicAngleSlider" type="range" min="0" max="360" value="45" step="1" />
+
+          <div class="detail-box" style="margin-top: 16px;">
+            <h3 id="dynamicAngleTitle">זווית חדה</h3>
+            <p id="dynamicAngleDefinition">זווית שגודלה גדול מ־0° וקטן מ־90°.</p>
+            <p><strong>טווח:</strong> <span id="dynamicAngleRange">בין 0° ל־90°</span></p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -620,6 +649,122 @@
       });
     });
 
+
+    const dynamicAngleSlider = document.getElementById("dynamicAngleSlider");
+    const movingRay = document.getElementById("movingRay");
+    const angleArc = document.getElementById("angleArc");
+    const dynamicAngleStatus = document.getElementById("dynamicAngleStatus");
+    const dynamicAngleValue = document.getElementById("dynamicAngleValue");
+    const dynamicAngleTitle = document.getElementById("dynamicAngleTitle");
+    const dynamicAngleDefinition = document.getElementById("dynamicAngleDefinition");
+    const dynamicAngleRange = document.getElementById("dynamicAngleRange");
+
+    function classifyAngle(angle) {
+      if (angle === 0) {
+        return {
+          title: "זווית אפס",
+          definition: "שתי שוקי הזווית נמצאות באותו כיוון, ולכן גודל הזווית הוא 0°.",
+          range: "0°"
+        };
+      }
+
+      if (angle > 0 && angle < 90) {
+        return {
+          title: "זווית חדה",
+          definition: "זווית שגודלה גדול מ־0° וקטן מ־90°.",
+          range: "בין 0° ל־90°"
+        };
+      }
+
+      if (angle === 90) {
+        return {
+          title: "זווית ישרה",
+          definition: "זווית שגודלה בדיוק 90°.",
+          range: "90°"
+        };
+      }
+
+      if (angle > 90 && angle < 180) {
+        return {
+          title: "זווית קהה",
+          definition: "זווית שגודלה גדול מ־90° וקטן מ־180°.",
+          range: "בין 90° ל־180°"
+        };
+      }
+
+      if (angle === 180) {
+        return {
+          title: "זווית שטוחה",
+          definition: "זווית שגודלה בדיוק 180° ושוקיה יוצרות קו ישר.",
+          range: "180°"
+        };
+      }
+
+      if (angle > 180 && angle < 360) {
+        return {
+          title: "זווית נישאה",
+          definition: "זווית שגודלה גדול מ־180° וקטן מ־360°.",
+          range: "בין 180° ל־360°"
+        };
+      }
+
+      return {
+        title: "זווית עגולה",
+        definition: "זווית המתארת סיבוב שלם וגודלה 360°.",
+        range: "360°"
+      };
+    }
+
+    function polarPoint(cx, cy, radius, degrees) {
+      const radians = degrees * Math.PI / 180;
+      return {
+        x: cx + radius * Math.cos(radians),
+        y: cy - radius * Math.sin(radians)
+      };
+    }
+
+    function describeArc(cx, cy, radius, startAngle, endAngle) {
+      if (endAngle >= 360) {
+        const start = polarPoint(cx, cy, radius, 0);
+        const middle = polarPoint(cx, cy, radius, 180);
+        return [
+          "M", start.x, start.y,
+          "A", radius, radius, 0, 1, 0, middle.x, middle.y,
+          "A", radius, radius, 0, 1, 0, start.x, start.y
+        ].join(" ");
+      }
+
+      const start = polarPoint(cx, cy, radius, startAngle);
+      const end = polarPoint(cx, cy, radius, endAngle);
+      const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+
+      return [
+        "M", start.x, start.y,
+        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+      ].join(" ");
+    }
+
+    function updateDynamicAngle() {
+      const angle = Number(dynamicAngleSlider.value);
+      const centerX = 220;
+      const centerY = 235;
+      const rayLength = 170;
+      const end = polarPoint(centerX, centerY, rayLength, angle);
+      const classification = classifyAngle(angle);
+
+      movingRay.setAttribute("x2", end.x);
+      movingRay.setAttribute("y2", end.y);
+      angleArc.setAttribute("d", describeArc(centerX, centerY, 72, 0, angle));
+
+      dynamicAngleStatus.textContent = classification.title;
+      dynamicAngleValue.textContent = angle + "°";
+      dynamicAngleTitle.textContent = classification.title;
+      dynamicAngleDefinition.textContent = classification.definition;
+      dynamicAngleRange.textContent = classification.range;
+    }
+
+    dynamicAngleSlider.addEventListener("input", updateDynamicAngle);
+
     const relationSelect = document.getElementById("relationSelect");
     const lineAngleSlider = document.getElementById("lineAngleSlider");
 
@@ -748,9 +893,11 @@
       });
     });
 
+    updateDynamicAngle();
     updateRelation();
     updateTriangle("acute");
     updateFinalTriangle();
   </script>
 </body>
 </html>
+
